@@ -1,23 +1,27 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from tqdm import tqdm
 
 
-class LogisitcRegression(nn.Module):
+class LogisticRegression(nn.Module):
 
-    def __init__(self, input_size, num_classes):
-        super(LogisitcRegression, self).__init__()
+    def __init__(self, input_size, num_classes, num_epochs, learning_rate, optimizer_class):
+        super(LogisticRegression, self).__init__()
         self.linear=nn.Linear(input_size,num_classes)
+        self.num_epochs=num_epochs
+        self.lr=learning_rate
+        self.optim_class=optimizer_class
     
     def forward(self,x):
         out=self.linear(x)
         return out
 
-    def train_model(self, train_loader, num_epochs=10, learning_rate=0.001):
+    def train_model(self, train_loader):
         criterion=nn.CrossEntropyLoss()
-        optimizer=optim.SGD(self.parameters(), lr=learning_rate)
+        optimizer=self.optim_class(self.parameters(), lr=self.lr)
 
-        for epoch in range(num_epochs):
+        for epoch in tqdm(range(self.num_epochs), desc=f'Epoch: '):
             for inputs, labels in train_loader:
                 inputs=inputs.view(inputs.size(0),-1)
                 optimizer.zero_grad()
@@ -26,7 +30,7 @@ class LogisitcRegression(nn.Module):
                 loss.backward()
                 optimizer.step()
             
-            print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
+            print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {loss.item():.4f}')
     
     def predict(self, test_loader):
         self.eval()

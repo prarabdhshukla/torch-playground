@@ -1,1 +1,1 @@
-from models.linear_classifier import LogisitcRegression
+from models.linear_classifier import LogisticRegression

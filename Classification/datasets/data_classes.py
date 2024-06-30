@@ -14,6 +14,8 @@ class Cifar10:
         self.root=root
         self.train=train
         self.download=download
+        self.num_classes=10
+        self.input_size=3072
     
     def load_data(self, batch_size=32, shuffle=True, num_workers=2):
         self.data_obj = CIFAR10(root=self.root, train=self.train, download=self.download, transform=transform)
@@ -26,6 +28,8 @@ class Cifar100:
         self.root=root
         self.train=train
         self.download=download
+        self.num_classes=100
+        self.input_size=3072
     
     def load_data(self, batch_size=32, shuffle=True, num_workers=2):
         self.data_obj = CIFAR100(root=self.root, train=self.train, download=self.download, transform=transform)
