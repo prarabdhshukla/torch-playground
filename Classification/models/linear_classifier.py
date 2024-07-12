@@ -6,22 +6,26 @@ from tqdm import tqdm
 
 class LogisticRegression(nn.Module):
 
-    def __init__(self, input_size, num_classes, num_epochs, learning_rate, optimizer_class):
+    def __init__(self, input_size, num_classes, num_epochs, learning_rate, optimizer_class, metric):
         super(LogisticRegression, self).__init__()
         self.linear=nn.Linear(input_size,num_classes)
         self.num_epochs=num_epochs
         self.lr=learning_rate
         self.optim_class=optimizer_class
+        self.metric = metric
     
     def forward(self,x):
         out=self.linear(x)
         return out
 
-    def train_model(self, train_loader):
+    def train_model(self, train_loader, val_loader=None):
         criterion=nn.CrossEntropyLoss()
         optimizer=self.optim_class(self.parameters(), lr=self.lr)
-
-        for epoch in tqdm(range(self.num_epochs), desc=f'Epoch: '):
+        val_loss = torch.Tensor([0])
+        loss = torch.Tensor([0])
+        val_metric = 'NA'
+        pbar = tqdm(range(self.num_epochs), desc=f'Train Loss: {loss.item():.4f} Val Loss: {val_loss.item():0.4f} Val {self.metric.__name__}: {val_metric}')
+        for epoch in pbar:
             for inputs, labels in train_loader:
                 inputs=inputs.view(inputs.size(0),-1)
                 optimizer.zero_grad()
@@ -30,7 +34,26 @@ class LogisticRegression(nn.Module):
                 loss.backward()
                 optimizer.step()
             
-            print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {loss.item():.4f}')
+            if val_loader:
+                self.eval()
+                val_loss = 0
+                outputs = []
+                ground_truth = []
+                with torch.no_grad():
+                    for inputs, labels in val_loader:
+                        inputs=inputs.view(inputs.size(0),-1)
+                        output = self(inputs)
+                        outputs.append(output)
+                        ground_truth.append(labels)
+                        val_loss += criterion(output, labels)
+
+                val_loss/= len(val_loader.dataset)  
+                val_metric = self.metric(outputs, ground_truth)
+
+            description=f'Train Loss: {loss.item()/len(train_loader.dataset):.4f} Val Loss: {val_loss.item():0.4f} Val {self.metric.__name__}: {val_metric}'
+            pbar.set_description(description)
+            self.train()
+            # print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {loss.item():.4f}')
     
     def predict(self, test_loader):
         self.eval()
