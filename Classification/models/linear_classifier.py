@@ -6,13 +6,14 @@ from tqdm import tqdm
 
 class LogisticRegression(nn.Module):
 
-    def __init__(self, input_size, num_classes, num_epochs, learning_rate, optimizer_class, metric):
+    def __init__(self, input_size, num_classes, num_epochs, learning_rate, optimizer_class, metric, est):
         super(LogisticRegression, self).__init__()
         self.linear=nn.Linear(input_size,num_classes)
         self.num_epochs=num_epochs
         self.lr=learning_rate
         self.optim_class=optimizer_class
         self.metric = metric
+        self.est = est
     
     def forward(self,x):
         out=self.linear(x)
@@ -24,6 +25,7 @@ class LogisticRegression(nn.Module):
         val_loss = torch.Tensor([0])
         loss = torch.Tensor([0])
         val_metric = 'NA'
+        es_counter, best_val_loss = 0,0
         pbar = tqdm(range(self.num_epochs), desc=f'Train Loss: {loss.item():.4f} Val Loss: {val_loss.item():0.4f} Val {self.metric.__name__}: {val_metric}')
         for epoch in pbar:
             for inputs, labels in train_loader:
@@ -53,6 +55,17 @@ class LogisticRegression(nn.Module):
             description=f'Train Loss: {loss.item()/len(train_loader.dataset):.4f} Val Loss: {val_loss.item():0.4f} Val {self.metric.__name__}: {val_metric}'
             pbar.set_description(description)
             self.train()
+
+            if self.est:
+                if val_loss.item() < best_val_loss:
+                    best_val_loss = val_loss.item()
+                    es_counter = 0
+                else:
+                    es_counter+=1
+                    if es_counter > self.est:
+                        print(f"\nEarly Stopping... Epochs: {epoch}/{self.num_epochs} \n Train Loss: {loss.item()/len(train_loader.dataset):.4f} Val Loss: {val_loss.item():0.4f} Val {self.metric.__name__}: {val_metric}")
+                        break
+
             # print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {loss.item():.4f}')
     
     def predict(self, test_loader):

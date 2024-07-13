@@ -31,6 +31,7 @@ def parse_arguments():
     parser.add_argument('--save_dir', help='Directory where the trained model must be saved', default='./saved_models/')
     parser.add_argument('--save_as', help='File name of the saved model', default=None)
     parser.add_argument('--metric', help='Validation Metric', default='accuracy', choices=get_imported_functions(metrics))
+    parser.add_argument('--early_stopping_threshold','-est', help='Number of epochs to wait after validation loss does not improve. Early stopping is not implemented if argument not provided.', default=None, type=int)
 
     return parser.parse_args()
 
@@ -51,7 +52,7 @@ if __name__=="__main__":
     metric = getattr(metrics, args.metric)
 
     model_class=getattr(models, args.model)
-    model=model_class(input_size, num_classes, args.num_epochs, args.learning_rate, optimizer_class, metric)
+    model=model_class(input_size, num_classes, args.num_epochs, args.learning_rate, optimizer_class, metric, args.early_stopping_threshold)
 
     model.train_model(train_loader, val_loader)
 
