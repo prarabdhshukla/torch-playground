@@ -7,7 +7,7 @@ Just punch in your training details via the command line, and voila! Your models
 Don't wait—operators are standing by! Call 999 now to dive into the **Torch Playground🔥** experience, where the only thing you have to lose is your coding stress!  
 
 ### [Testimonials](#testimonials)
-> _"Before **Torch Playground🔥**, my friends called me a nerd and people avoided me at parties. My boss thought I was the fiscal loss, and girls gave me their algebra homework when I asked for their number. Now thanks to **Torch Playground🔥**, my social life has taken a 180 degree turn, I've gone from the coding loner to a social butterfly, all thanks to **Torch Playground🔥**!_
+> _"Before **Torch Playground🔥**, my friends called me a nerd and people avoided me at parties. My boss thought I was the fiscal loss, and girls gave me their algebra homework when I asked for their number. Now thanks to **Torch Playground🔥**, my social life has taken a 180 degree turn. I've gone from the coding loner to a social butterfly, all thanks to **Torch Playground🔥**!_
 <div style="text-align: right"> -- John Smith (Former loser) </div> 
 
 ## Why Torch Playground 🔥?
