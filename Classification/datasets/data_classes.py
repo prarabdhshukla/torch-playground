@@ -19,7 +19,7 @@ class Cifar10:
         self.transform = transform
         self.val_size=val_size
     
-    def load_data(self, batch_size=32, shuffle=True, num_workers=2):
+    def load_data(self, batch_size, shuffle=True, num_workers=2):
 
         if self.train:
             self.data_obj = CIFAR10(root=self.root, train=self.train, download=self.download, transform=self.transform)
@@ -42,7 +42,7 @@ class Cifar100:
         self.transform = transform
         self.val_size=val_size
     
-    def load_data(self, batch_size=32, shuffle=True, num_workers=2):
+    def load_data(self, batch_size, shuffle=True, num_workers=2):
 
         if self.train:
             self.data_obj = CIFAR100(root=self.root, train=self.train, download=self.download, transform=self.transform)

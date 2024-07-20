@@ -64,7 +64,8 @@ class LogisticRegression(nn.Module):
                     es_counter+=1
                     if es_counter > self.est:
                         print(f"\nEarly Stopping... Epochs: {epoch}/{self.num_epochs} \n Train Loss: {loss.item()/len(train_loader.dataset):.4f} Val Loss: {val_loss.item():0.4f} Val {self.metric.__name__}: {val_metric}")
-                        break
+                        return val_metric
+        return val_metric
 
             # print(f'Epoch [{epoch+1}/{self.num_epochs}], Loss: {loss.item():.4f}')
     
