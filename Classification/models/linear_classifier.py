@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 class LogisticRegression(nn.Module):
 
-    def __init__(self, input_size, num_classes, num_epochs, learning_rate, optimizer_class, metric, est):
+    def __init__(self, input_size, num_classes, num_epochs, learning_rate, optimizer_class, metric, est, log_training):
         super(LogisticRegression, self).__init__()
         self.linear=nn.Linear(input_size,num_classes)
         self.num_epochs=num_epochs
@@ -14,6 +14,12 @@ class LogisticRegression(nn.Module):
         self.optim_class=optimizer_class
         self.metric = metric
         self.est = est
+        if log_training:
+            self.log = {
+                'training_loss' : [],
+                'validation_loss': [],
+                'validation_metric': []
+            }
     
     def forward(self,x):
         out=self.linear(x)
@@ -51,11 +57,15 @@ class LogisticRegression(nn.Module):
 
                 val_loss/= len(val_loader.dataset)  
                 val_metric = self.metric(outputs, ground_truth)
+                train_loss = loss.item()/len(train_loader.dataset)
 
-            description=f'Train Loss: {loss.item()/len(train_loader.dataset):.4f} Val Loss: {val_loss.item():0.4f} Val {self.metric.__name__}: {val_metric}'
+            description=f'Train Loss: {train_loss:.4f} Val Loss: {val_loss.item():0.4f} Val {self.metric.__name__}: {val_metric}'
             pbar.set_description(description)
             self.train()
-
+            if self.log:
+                self.log['training_loss'].append(train_loss)
+                self.log['validation_loss'].append(val_loss.item())
+                self.log['validation_metric'].append(val_metric)
             if self.est:
                 if val_loss.item() < best_val_loss:
                     best_val_loss = val_loss.item()
