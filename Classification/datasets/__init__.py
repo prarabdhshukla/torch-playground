@@ -1,1 +1,1 @@
-from datasets.data_classes import Cifar10, Cifar100
+from Datasets.data_classes import Cifar10, Cifar100

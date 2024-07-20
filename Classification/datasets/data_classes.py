@@ -10,7 +10,7 @@ Transform = transforms.Compose([
 ])
 
 class Cifar10:
-    def __init__(self, root='./data', train= True, download=True, transform = Transform, val_size=0.2):
+    def __init__(self, val_size, root='./data', train= True, download=True, transform = Transform):
         self.root=root
         self.train=train
         self.download=download
@@ -33,7 +33,7 @@ class Cifar10:
 
 
 class Cifar100:
-    def __init__(self, root='./data', train= True, download=True, transform = Transform, val_size=0.2):
+    def __init__(self, val_size, root='./data', train= True, download=True, transform = Transform):
         self.root=root
         self.train=train
         self.download=download
